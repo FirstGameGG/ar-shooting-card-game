@@ -39,20 +39,19 @@
         display: none;
       }
       .game-over {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: Arial, sans-serif;
-  font-size: 2em;
-  color: yellow;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  display: none; /* Hidden by default */
-}
-      
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: Arial, sans-serif;
+        font-size: 2em;
+        color: yellow;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        display: none; /* Hidden by default */
+      }
     </style>
 
     <script>
@@ -95,7 +94,7 @@
           this.dieEffectA = document.querySelector("#dieEffectA");
           this.dieEffectB = document.querySelector("#dieEffectB");
           this.gameOverDisplay = document.querySelector("#game-over");
-    this.winnerDisplay = document.querySelector("#winner");
+          this.winnerDisplay = document.querySelector("#winner");
 
           this.stats = {
             charaA: { hp: 100, armor: 100 },
@@ -121,7 +120,6 @@
             sks_type_56: 24,
             vz61_skorpion: 14,
           };
-
 
           // Function to apply damage
           const applyDamage = (character, damage) => {
@@ -278,31 +276,31 @@
 
           // Handle death and die effects
           if (this.stats.charaA.hp <= 0) {
-      if (!this.dieEffectA.object3D.visible) {
-        this.dieEffectA.object3D.visible = true;
-        this.dieEffectA.object3D.position.copy(
-          this.Agent1.object3D.position
-        );
-        this.Agent1.object3D.visible = false;
-        this.showGameOver("Agent B Wins!");
-      }
-    }
+            if (!this.dieEffectA.object3D.visible) {
+              this.dieEffectA.object3D.visible = true;
+              this.dieEffectA.object3D.position.copy(
+                this.Agent1.object3D.position
+              );
+              this.Agent1.object3D.visible = false;
+              this.showGameOver("Agent B Wins!");
+            }
+          }
 
-    if (this.stats.charaB.hp <= 0) {
-      if (!this.dieEffectB.object3D.visible) {
-        this.dieEffectB.object3D.visible = true;
-        this.dieEffectB.object3D.position.copy(
-          this.Agent2.object3D.position
-        );
-        this.Agent2.object3D.visible = false;
-        this.showGameOver("Agent A Wins!");
-      }
-    }
-  },
-  showGameOver: function (winnerText) {
-    this.gameOverDisplay.style.display = "block";
-    this.winnerDisplay.innerHTML = winnerText;
-  }
+          if (this.stats.charaB.hp <= 0) {
+            if (!this.dieEffectB.object3D.visible) {
+              this.dieEffectB.object3D.visible = true;
+              this.dieEffectB.object3D.position.copy(
+                this.Agent2.object3D.position
+              );
+              this.Agent2.object3D.visible = false;
+              this.showGameOver("Agent A Wins!");
+            }
+          }
+        },
+        showGameOver: function (winnerText) {
+          this.gameOverDisplay.style.display = "block";
+          this.winnerDisplay.innerHTML = winnerText;
+        },
       });
     </script>
   </head>
@@ -324,9 +322,35 @@
           rotation="90 0 0"
           animation-mixer="clip: eye_test"
         >
-        <a-gltf-model id="ak47Model"src="model/ak_47.glb" position="-0.1 1.45 0.4" scale="0.4 0.4 0.4" rotation="0 180 0"></a-gltf-model>
-        <a-gltf-model id="famasF1Model"src="model/famas_f1.glb" position="-0.1 1.35 0.4" scale="0.4 0.4 0.4" rotation="0 180 0"></a-gltf-model>
-        <a-gltf-model id="pp19BizonModel"src="model/pp_19_bizon.glb" position="-0.15 1.35 0.4" scale="0.5 0.5 0.5" rotation="0 180 0"></a-gltf-model>
+          <a-plane
+            src="plane/AgentA.png"
+            position="0 0 1"
+            height="2.7"
+            width="2"
+            rotation="-90 0 0"
+            opacity="0.8"
+          ></a-plane>
+          <a-gltf-model
+            id="ak47Model"
+            src="model/ak_47.glb"
+            position="-0.1 1.45 0.4"
+            scale="0.4 0.4 0.4"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="famasF1Model"
+            src="model/famas_f1.glb"
+            position="-0.1 1.35 0.4"
+            scale="0.4 0.4 0.4"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="pp19BizonModel"
+            src="model/pp_19_bizon.glb"
+            position="-0.15 1.35 0.4"
+            scale="0.5 0.5 0.5"
+            rotation="0 180 0"
+          ></a-gltf-model>
 
           <a-gltf-model
             id="dieEffectA"
@@ -349,9 +373,35 @@
           rotation="90 0 0"
           animation-mixer="clip: tools_preview"
         >
-        <a-gltf-model id="m14Model"src="model/m14.glb" position="-0.1 1 0.3" scale="0.6 0.6 0.6" rotation="0 180 0"></a-gltf-model>
-        <a-gltf-model id="sksType56Model"src="model/sks_type_56.glb" position="-0.1 1.08 0.4" scale="0.4 0.4 0.4" rotation="0 180 0"></a-gltf-model>
-        <a-gltf-model id="vz61SkorpionModel"src="model/vz61_skorpion.glb" position="-0.1 1.15 0.15" scale="0.2 0.2 0.2" rotation="0 180 0"></a-gltf-model>
+          <a-plane
+            src="plane/AgentB.png"
+            position="0 0 1"
+            height="2.7"
+            width="2"
+            rotation="-90 0 0"
+            opacity="0.8"
+          ></a-plane>
+          <a-gltf-model
+            id="m14Model"
+            src="model/m14.glb"
+            position="-0.1 1 0.3"
+            scale="0.6 0.6 0.6"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="sksType56Model"
+            src="model/sks_type_56.glb"
+            position="-0.1 1.08 0.4"
+            scale="0.4 0.4 0.4"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="vz61SkorpionModel"
+            src="model/vz61_skorpion.glb"
+            position="-0.1 1.15 0.15"
+            scale="0.2 0.2 0.2"
+            rotation="0 180 0"
+          ></a-gltf-model>
 
           <a-gltf-model
             id="dieEffectB"
@@ -365,41 +415,87 @@
         </a-gltf-model>
       </a-entity>
 
-      <a-entity
-        mindar-image-target="targetIndex: 2"
-        id="ak_47"
-        target-events
-      ></a-entity>
+      <a-entity mindar-image-target="targetIndex: 2" id="ak_47" target-events>
+        <a-plane
+          src="plane/ak_47.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
 
       <a-entity
         mindar-image-target="targetIndex: 3"
         id="famas_f1"
         target-events
-      ></a-entity>
+      >
+        <a-plane
+          src="plane/famas_f1.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
 
       <a-entity
         mindar-image-target="targetIndex: 4"
         id="pp_19_bizon"
         target-events
-      ></a-entity>
+      >
+        <a-plane
+          src="plane/pp_19_bizon.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
 
-      <a-entity
-        mindar-image-target="targetIndex: 5"
-        id="m14"
-        target-events
-      ></a-entity>
+      <a-entity mindar-image-target="targetIndex: 5" id="m14" target-events>
+        <a-plane
+          src="plane/m14.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
 
       <a-entity
         mindar-image-target="targetIndex: 6"
         id="sks_type_56"
         target-events
-      ></a-entity>
+      >
+        <a-plane
+          src="plane/sks_type_56.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
 
       <a-entity
         mindar-image-target="targetIndex: 7"
         id="vz61_skorpion"
         target-events
-      ></a-entity>
+      >
+        <a-plane
+          src="plane/vz61_skorpion.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
 
       <!-- HP Displays -->
       <div id="hp-display-A" class="hp-gui hp-agentA">Agent A HP: 100</div>
@@ -414,7 +510,7 @@
       </div>
 
       <div id="game-over" class="game-over">
-        GAME OVER<br>
+        GAME OVER<br />
         <span id="winner"></span>
       </div>
 
