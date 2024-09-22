@@ -6,9 +6,14 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
 
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+      * {
+        font-family: "Press Start 2P";
+      }
       .hp-gui {
         position: absolute;
-        font-family: Arial, sans-serif;
+        font-family: "Press Start 2P", Arial, sans-serif;
         padding: 10px;
         border-radius: 5px;
         color: white;
@@ -25,19 +30,7 @@
         background-color: rgba(255, 0, 0, 0.5); /* Red color */
         display: none;
       }
-      .armor-agentA {
-        top: 50px; /* Position below the HP bar */
-        left: 10px;
-        background-color: rgba(0, 0, 128, 0.5); /* Dark blue color */
-        display: none;
-      }
 
-      .armor-agentB {
-        top: 50px; /* Position below the HP bar */
-        right: 10px;
-        background-color: rgba(128, 0, 0, 0.5); /* Dark red color */
-        display: none;
-      }
       .game-over {
         position: absolute;
         top: 50%;
@@ -51,6 +44,39 @@
         border-radius: 10px;
         text-align: center;
         display: none; /* Hidden by default */
+      }
+
+      /* Health Bar Styling */
+      .health-bar {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 300px;
+        height: 20px;
+        padding: 5px;
+        background: #ddd;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        position: relative;
+        margin-bottom: 5px;
+        margin-top: 15px;
+      }
+      .health-bar .bar {
+        background: #00c04b;
+        width: 100%;
+        height: 10px;
+        position: relative;
+        transition: width 0.5s linear;
+      }
+      .health-bar .hit {
+        background: rgba(255, 255, 255, 0.6);
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 0px;
+        transition: width 0.5s linear;
       }
     </style>
 
@@ -89,16 +115,19 @@
           this.vz61SkorpionModel = document.querySelector("#vz61SkorpionModel");
           this.hpDisplayA = document.querySelector("#hp-display-A");
           this.hpDisplayB = document.querySelector("#hp-display-B");
-          this.armorDisplayA = document.querySelector("#armor-display-A");
-          this.armorDisplayB = document.querySelector("#armor-display-B");
           this.dieEffectA = document.querySelector("#dieEffectA");
           this.dieEffectB = document.querySelector("#dieEffectB");
           this.gameOverDisplay = document.querySelector("#game-over");
           this.winnerDisplay = document.querySelector("#winner");
+          this.healthBarA = document.querySelector("#health-bar-A .bar");
+          this.healthHitA = document.querySelector("#health-bar-A .hit");
+          this.healthBarB = document.querySelector("#health-bar-B .bar");
+          this.healthHitB = document.querySelector("#health-bar-B .hit");
+          this.statusDisplay = document.querySelector("#status-display");
 
           this.stats = {
-            charaA: { hp: 100, armor: 100 },
-            charaB: { hp: 100, armor: 100 },
+            charaA: { hp: 200 },
+            charaB: { hp: 200 },
           };
 
           // Flags to track if damage has been applied
@@ -121,17 +150,28 @@
             vz61_skorpion: 14,
           };
 
+          const calculateDamage = (damage) => {
+            const critChance = Math.random(); // Generates a number between 0 and 1
+            if (critChance <= 0.15) {
+              this.statusDisplay.style.color = "#FFB81C";
+              this.statusDisplay.innerHTML =
+                "Weapon malfunction! No damage applied.";
+              return 0; // 15% chance for malfunction
+            } else if (critChance <= 0.35) {
+              this.statusDisplay.style.color = "#c54";
+              this.statusDisplay.innerHTML = "Critical Hit! Damage x1.5.";
+              return damage * 1.5; // 20% chance for critical damage
+            } else {
+              this.statusDisplay.style.color = "white";
+              this.statusDisplay.innerHTML = "Normal Hit.";
+              return damage; // Normal damage
+            }
+          };
+
           // Function to apply damage
           const applyDamage = (character, damage) => {
-            if (character.armor > 0) {
-              let remainingDamage = damage - character.armor;
-              character.armor = Math.max(0, character.armor - damage);
-              if (remainingDamage > 0) {
-                character.hp = Math.max(0, character.hp - remainingDamage);
-              }
-            } else {
-              character.hp = Math.max(0, character.hp - damage);
-            }
+            damage = calculateDamage(damage);
+            character.hp = Math.max(0, character.hp - damage);
           };
 
           // Handle visibility of AgentA and weapon detection
@@ -255,23 +295,51 @@
 
           // Update HP and Armor displays
           if (target_visible["charaA"]) {
+            let color = "#00c04b";
             this.hpDisplayA.style.display = "block";
-            this.hpDisplayA.innerHTML = `Agent A HP: ${this.stats.charaA.hp}`;
-            this.armorDisplayA.style.display = "block";
-            this.armorDisplayA.innerHTML = `Agent A Armor: ${this.stats.charaA.armor}`;
+            // Update health bar A
+            const healthValueA = this.stats.charaA.hp;
+            const totalHealthA = 200;
+            const healthWidthA = (healthValueA / totalHealthA) * 100;
+            this.healthBarA.style.width = healthWidthA + "%";
+
+            if (healthValueA <= 66) color = "#F6412D";
+            else if (healthValueA <= 132) color = "#EDC211";
+
+            this.hpDisplayA.innerHTML = `
+    Agent A HP: ${healthValueA} / ${totalHealthA}
+    <div class="health-bar" id="health-bar-A" data-total="${totalHealthA}" data-value="${healthValueA}">
+      <div class="bar" style="width: ${healthWidthA}%; background-color: ${color};"></div>
+      <div class="hit"></div>
+    </div>
+  `;
           } else {
             this.hpDisplayA.style.display = "none";
-            this.armorDisplayA.style.display = "none";
           }
 
+          // Update HP and Armor bars for Agent B
           if (target_visible["charaB"]) {
+            let color = "#00c04b";
             this.hpDisplayB.style.display = "block";
-            this.hpDisplayB.innerHTML = `Agent B HP: ${this.stats.charaB.hp}`;
-            this.armorDisplayB.style.display = "block";
-            this.armorDisplayB.innerHTML = `Agent B Armor: ${this.stats.charaB.armor}`;
+
+            // Update health bar B
+            const healthValueB = this.stats.charaB.hp;
+            const totalHealthB = 200;
+            const healthWidthB = (healthValueB / totalHealthB) * 100;
+            this.healthBarB.style.width = healthWidthB + "%";
+
+            if (healthValueB <= 66) color = "#F6412D";
+            else if (healthValueB <= 132) color = "#EDC211";
+
+            this.hpDisplayB.innerHTML = `
+    Agent B HP: ${healthValueB} / ${totalHealthB}
+    <div class="health-bar" id="health-bar-B" data-total="${totalHealthB}" data-value="${healthValueB}" style>
+      <div class="bar" style="width: ${healthWidthB}%; background-color: ${color};"></div>
+      <div class="hit"></div>
+    </div>
+  `;
           } else {
             this.hpDisplayB.style.display = "none";
-            this.armorDisplayB.style.display = "none";
           }
 
           // Handle death and die effects
@@ -497,20 +565,53 @@
         ></a-plane>
       </a-entity>
 
-      <!-- HP Displays -->
-      <div id="hp-display-A" class="hp-gui hp-agentA">Agent A HP: 100</div>
-      <div id="hp-display-B" class="hp-gui hp-agentB">Agent B HP: 100</div>
-
-      <!-- Armor Displays -->
-      <div id="armor-display-A" class="hp-gui armor-agentA">
-        Agent A Armor: 100
+      <div id="hp-display-A" class="hp-gui hp-agentA">
+        Agent A HP: 200
+        <div
+          class="health-bar"
+          id="health-bar-A"
+          data-total="200"
+          data-value="200"
+        >
+          <div class="bar"></div>
+          <div class="hit"></div>
+        </div>
       </div>
-      <div id="armor-display-B" class="hp-gui armor-agentB">
-        Agent B Armor: 100
+
+      <div id="hp-display-B" class="hp-gui hp-agentB">
+        Agent B HP: 200
+        <div
+          class="health-bar"
+          id="health-bar-B"
+          data-total="200"
+          data-value="200"
+        >
+          <div class="bar"></div>
+          <div class="hit"></div>
+        </div>
       </div>
 
-      <div id="game-over" class="game-over">
-        GAME OVER<br />
+      <div
+        id="status-display"
+        style="
+          position: absolute;
+          bottom: 10px;
+          color: white;
+          text-align: center;
+          font-size: 2em;
+          left: 50%;
+          padding: 10px;
+          transform: translate(-50%, -50%);
+        "
+      ></div>
+
+      <!-- Game Over Display -->
+      <div
+        id="game-over"
+        class="game-over"
+        style="font-family: 'Press Start 2P'"
+      >
+        GAME OVER <br />
         <span id="winner"></span>
       </div>
 

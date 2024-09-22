@@ -1,5 +1,0 @@
-{
-    "rewrites": [
-        {"source": "/", "destination": "/mindar_shootiing_game.html" }
-    ]
-}
