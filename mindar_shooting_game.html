@@ -104,7 +104,6 @@
 
       AFRAME.registerComponent("draw-line", {
         init: function () {
-          // References to the DOM/HTML elements
           this.Agent1 = document.querySelector("#charaAModel");
           this.Agent2 = document.querySelector("#charaBModel");
           this.ak47Model = document.querySelector("#ak47Model");
@@ -117,6 +116,8 @@
           this.hpDisplayB = document.querySelector("#hp-display-B");
           this.dieEffectA = document.querySelector("#dieEffectA");
           this.dieEffectB = document.querySelector("#dieEffectB");
+          this.shootEffectA = document.querySelector("#shootEffectA");
+          this.shootEffectB = document.querySelector("#shootEffectB");
           this.gameOverDisplay = document.querySelector("#game-over");
           this.winnerDisplay = document.querySelector("#winner");
           this.healthBarA = document.querySelector("#health-bar-A .bar");
@@ -172,6 +173,15 @@
           const applyDamage = (character, damage) => {
             damage = calculateDamage(damage);
             character.hp = Math.max(0, character.hp - damage);
+            return damage > 0; // Return true if damage was applied, false if no damage (malfunction)
+          };
+
+          // Function to show shoot effect for 2 seconds
+          const triggerShootEffect = (shootEffect) => {
+            shootEffect.object3D.visible = true;
+            setTimeout(() => {
+              shootEffect.object3D.visible = false;
+            }, 2000); // Hide after 2 seconds
           };
 
           // Handle visibility of AgentA and weapon detection
@@ -186,8 +196,14 @@
               );
 
               if (!this.famasF1Tracked) {
-                applyDamage(this.stats.charaB, DAMAGE_VALUES.famas_f1);
+                const damageApplied = applyDamage(
+                  this.stats.charaB,
+                  DAMAGE_VALUES.famas_f1
+                );
                 this.famasF1Tracked = true;
+                if (damageApplied) {
+                  triggerShootEffect(this.shootEffectA);
+                }
               }
             } else if (target_visible["pp_19_bizon"]) {
               this.pp19BizonModel.object3D.visible = true;
@@ -197,8 +213,14 @@
               );
 
               if (!this.pp19BizonTracked) {
-                applyDamage(this.stats.charaB, DAMAGE_VALUES.pp_19_bizon);
+                const damageApplied = applyDamage(
+                  this.stats.charaB,
+                  DAMAGE_VALUES.pp_19_bizon
+                );
                 this.pp19BizonTracked = true;
+                if (damageApplied) {
+                  triggerShootEffect(this.shootEffectA);
+                }
               }
             } else if (target_visible["ak_47"]) {
               this.ak47Model.object3D.visible = true;
@@ -208,8 +230,14 @@
               );
 
               if (!this.ak47Tracked) {
-                applyDamage(this.stats.charaB, DAMAGE_VALUES.ak_47);
+                const damageApplied = applyDamage(
+                  this.stats.charaB,
+                  DAMAGE_VALUES.ak_47
+                );
                 this.ak47Tracked = true;
+                if (damageApplied) {
+                  triggerShootEffect(this.shootEffectA);
+                }
               }
             } else {
               // No weapon detected, reset to "eye-test" pose
@@ -240,8 +268,14 @@
               );
 
               if (!this.m14Tracked) {
-                applyDamage(this.stats.charaA, DAMAGE_VALUES.m14);
+                const damageApplied = applyDamage(
+                  this.stats.charaA,
+                  DAMAGE_VALUES.m14
+                );
                 this.m14Tracked = true;
+                if (damageApplied) {
+                  triggerShootEffect(this.shootEffectB);
+                }
               }
             } else if (target_visible["sks_type_56"]) {
               this.sksType56Model.object3D.visible = true;
@@ -251,8 +285,14 @@
               );
 
               if (!this.sksType56Tracked) {
-                applyDamage(this.stats.charaA, DAMAGE_VALUES.sks_type_56);
+                const damageApplied = applyDamage(
+                  this.stats.charaA,
+                  DAMAGE_VALUES.sks_type_56
+                );
                 this.sksType56Tracked = true;
+                if (damageApplied) {
+                  triggerShootEffect(this.shootEffectB);
+                }
               }
             } else if (target_visible["vz61_skorpion"]) {
               this.vz61SkorpionModel.object3D.visible = true;
@@ -262,8 +302,14 @@
               );
 
               if (!this.vz61SkorpionTracked) {
-                applyDamage(this.stats.charaA, DAMAGE_VALUES.vz61_skorpion);
+                const damageApplied = applyDamage(
+                  this.stats.charaA,
+                  DAMAGE_VALUES.vz61_skorpion
+                );
                 this.vz61SkorpionTracked = true;
+                if (damageApplied) {
+                  triggerShootEffect(this.shootEffectB);
+                }
               }
             } else {
               // No weapon detected, reset to "eye-test" pose
@@ -282,22 +328,20 @@
             this.vz61SkorpionModel.object3D.visible = false;
           }
 
-          if (target_visible["charaA"] && target_visible["charaB"]) {
-            let positionA = new THREE.Vector3();
-            let positionB = new THREE.Vector3();
+          // Ensure both Agents look at each other
+          let positionA = new THREE.Vector3();
+          let positionB = new THREE.Vector3();
 
-            this.Agent1.object3D.getWorldPosition(positionA);
-            this.Agent2.object3D.getWorldPosition(positionB);
+          this.Agent1.object3D.getWorldPosition(positionA);
+          this.Agent2.object3D.getWorldPosition(positionB);
 
-            this.Agent1.object3D.lookAt(positionB);
-            this.Agent2.object3D.lookAt(positionA);
-          }
+          this.Agent1.object3D.lookAt(positionB);
+          this.Agent2.object3D.lookAt(positionA);
 
-          // Update HP and Armor displays
+          // Update HP and Armor displays for both agents
           if (target_visible["charaA"]) {
             let color = "#00c04b";
             this.hpDisplayA.style.display = "block";
-            // Update health bar A
             const healthValueA = this.stats.charaA.hp;
             const totalHealthA = 200;
             const healthWidthA = (healthValueA / totalHealthA) * 100;
@@ -307,22 +351,19 @@
             else if (healthValueA <= 132) color = "#EDC211";
 
             this.hpDisplayA.innerHTML = `
-    Agent A HP: ${healthValueA} / ${totalHealthA}
-    <div class="health-bar" id="health-bar-A" data-total="${totalHealthA}" data-value="${healthValueA}">
-      <div class="bar" style="width: ${healthWidthA}%; background-color: ${color};"></div>
-      <div class="hit"></div>
-    </div>
+  Agent A HP: ${healthValueA} / ${totalHealthA}
+  <div class="health-bar" id="health-bar-A" data-total="${totalHealthA}" data-value="${healthValueA}">
+    <div class="bar" style="width: ${healthWidthA}%; background-color: ${color};"></div>
+    <div class="hit"></div>
+  </div>
   `;
           } else {
             this.hpDisplayA.style.display = "none";
           }
 
-          // Update HP and Armor bars for Agent B
           if (target_visible["charaB"]) {
             let color = "#00c04b";
             this.hpDisplayB.style.display = "block";
-
-            // Update health bar B
             const healthValueB = this.stats.charaB.hp;
             const totalHealthB = 200;
             const healthWidthB = (healthValueB / totalHealthB) * 100;
@@ -332,11 +373,11 @@
             else if (healthValueB <= 132) color = "#EDC211";
 
             this.hpDisplayB.innerHTML = `
-    Agent B HP: ${healthValueB} / ${totalHealthB}
-    <div class="health-bar" id="health-bar-B" data-total="${totalHealthB}" data-value="${healthValueB}" style>
-      <div class="bar" style="width: ${healthWidthB}%; background-color: ${color};"></div>
-      <div class="hit"></div>
-    </div>
+  Agent B HP: ${healthValueB} / ${totalHealthB}
+  <div class="health-bar" id="health-bar-B" data-total="${totalHealthB}" data-value="${healthValueB}">
+    <div class="bar" style="width: ${healthWidthB}%; background-color: ${color};"></div>
+    <div class="hit"></div>
+  </div>
   `;
           } else {
             this.hpDisplayB.style.display = "none";
@@ -365,6 +406,7 @@
             }
           }
         },
+
         showGameOver: function (winnerText) {
           this.gameOverDisplay.style.display = "block";
           this.winnerDisplay.innerHTML = winnerText;
@@ -427,8 +469,16 @@
             scale="0.25 0.25 0.25"
             visible="false"
             animation-mixer="clip: Explosion"
-          >
-          </a-gltf-model>
+          ></a-gltf-model>
+          <a-gltf-model
+            id="shootEffectA"
+            src="model/timeframe_explosion.glb"
+            position="0 1.5 1.0"
+            scale="0.035 0.035 0.035"
+            rotation="90 90 90"
+            visible="false"
+            animation-mixer="clip: Explosion"
+          ></a-gltf-model>
         </a-gltf-model>
       </a-entity>
 
@@ -478,8 +528,16 @@
             scale="0.25 0.25 0.25"
             visible="false"
             animation-mixer="clip: Explosion"
-          >
-          </a-gltf-model>
+          ></a-gltf-model>
+          <a-gltf-model
+            id="shootEffectB"
+            src="model/timeframe_explosion.glb"
+            position="0 1.30 1.0"
+            scale="0.035 0.035 0.035"
+            rotation="90 90 90"
+            visible="false"
+            animation-mixer="clip: Explosion"
+          ></a-gltf-model>
         </a-gltf-model>
       </a-entity>
 
