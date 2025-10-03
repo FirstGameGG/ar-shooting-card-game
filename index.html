@@ -1,0 +1,278 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Shooting Card Game</title>
+    
+    <!-- Load external libraries -->
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
+
+    <!-- Load custom styles and scripts -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="game.js"></script>
+  </head>
+
+  <body>
+    <a-scene
+      mindar-image="imageTargetSrc: mind/targets.mind; maxTrack: 8"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0" id="charaA" target-events>
+        <a-gltf-model
+          id="charaAModel"
+          src="model/fbi_cs2_agent.glb"
+          position="0 0.5 0"
+          scale="0.5 0.5 0.5"
+          rotation="90 0 0"
+          animation-mixer="clip: eye_test"
+        >
+          <a-plane
+            src="plane/AgentA.png"
+            position="0 0 1"
+            height="2.7"
+            width="2"
+            rotation="-90 0 0"
+            opacity="0.8"
+          ></a-plane>
+          <a-gltf-model
+            id="ak47Model"
+            src="model/ak_47.glb"
+            position="-0.1 1.45 0.4"
+            scale="0.4 0.4 0.4"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="famasF1Model"
+            src="model/famas_f1.glb"
+            position="-0.1 1.35 0.4"
+            scale="0.4 0.4 0.4"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="pp19BizonModel"
+            src="model/pp_19_bizon.glb"
+            position="-0.15 1.35 0.4"
+            scale="0.5 0.5 0.5"
+            rotation="0 180 0"
+          ></a-gltf-model>
+
+          <a-gltf-model
+            id="dieEffectA"
+            src="model/timeframe_explosion.glb"
+            position="0 0.5 0"
+            scale="0.25 0.25 0.25"
+            visible="false"
+            animation-mixer="clip: Explosion"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="shootEffectA"
+            src="model/timeframe_explosion.glb"
+            position="0 1.5 1.0"
+            scale="0.035 0.035 0.035"
+            rotation="90 90 90"
+            visible="false"
+            animation-mixer="clip: Explosion"
+          ></a-gltf-model>
+        </a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1" id="charaB" target-events>
+        <a-gltf-model
+          id="charaBModel"
+          src="model/balkan_cs2_agent.glb"
+          position="0 0.5 0"
+          scale="0.5 0.5 0.5"
+          rotation="90 0 0"
+          animation-mixer="clip: tools_preview"
+        >
+          <a-plane
+            src="plane/AgentB.png"
+            position="0 0 1"
+            height="2.7"
+            width="2"
+            rotation="-90 0 0"
+            opacity="0.8"
+          ></a-plane>
+          <a-gltf-model
+            id="m14Model"
+            src="model/m14.glb"
+            position="-0.1 1 0.3"
+            scale="0.6 0.6 0.6"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="sksType56Model"
+            src="model/sks_type_56.glb"
+            position="-0.1 1.08 0.4"
+            scale="0.4 0.4 0.4"
+            rotation="0 180 0"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="vz61SkorpionModel"
+            src="model/vz61_skorpion.glb"
+            position="-0.1 1.15 0.15"
+            scale="0.2 0.2 0.2"
+            rotation="0 180 0"
+          ></a-gltf-model>
+
+          <a-gltf-model
+            id="dieEffectB"
+            src="model/timeframe_explosion.glb"
+            position="0 0.5 0"
+            scale="0.25 0.25 0.25"
+            visible="false"
+            animation-mixer="clip: Explosion"
+          ></a-gltf-model>
+          <a-gltf-model
+            id="shootEffectB"
+            src="model/timeframe_explosion.glb"
+            position="0 1.30 1.0"
+            scale="0.035 0.035 0.035"
+            rotation="90 90 90"
+            visible="false"
+            animation-mixer="clip: Explosion"
+          ></a-gltf-model>
+        </a-gltf-model>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 2" id="ak_47" target-events>
+        <a-plane
+          src="plane/ak_47.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
+
+      <a-entity
+        mindar-image-target="targetIndex: 3"
+        id="famas_f1"
+        target-events
+      >
+        <a-plane
+          src="plane/famas_f1.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
+
+      <a-entity
+        mindar-image-target="targetIndex: 4"
+        id="pp_19_bizon"
+        target-events
+      >
+        <a-plane
+          src="plane/pp_19_bizon.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 5" id="m14" target-events>
+        <a-plane
+          src="plane/m14.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
+
+      <a-entity
+        mindar-image-target="targetIndex: 6"
+        id="sks_type_56"
+        target-events
+      >
+        <a-plane
+          src="plane/sks_type_56.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
+
+      <a-entity
+        mindar-image-target="targetIndex: 7"
+        id="vz61_skorpion"
+        target-events
+      >
+        <a-plane
+          src="plane/vz61_skorpion.png"
+          position="0 0 0"
+          height="0.65"
+          width="1"
+          rotation="0 0 0"
+          opacity="0.8"
+        ></a-plane>
+      </a-entity>
+
+      <div id="hp-display-A" class="hp-gui hp-agentA">
+        Agent A HP: 200
+        <div
+          class="health-bar"
+          id="health-bar-A"
+          data-total="200"
+          data-value="200"
+        >
+          <div class="bar"></div>
+          <div class="hit"></div>
+        </div>
+      </div>
+
+      <div id="hp-display-B" class="hp-gui hp-agentB">
+        Agent B HP: 200
+        <div
+          class="health-bar"
+          id="health-bar-B"
+          data-total="200"
+          data-value="200"
+        >
+          <div class="bar"></div>
+          <div class="hit"></div>
+        </div>
+      </div>
+
+      <div
+        id="status-display"
+        style="
+          position: absolute;
+          bottom: 10px;
+          color: white;
+          text-align: center;
+          font-size: 2em;
+          left: 50%;
+          padding: 10px;
+          transform: translate(-50%, -50%);
+        "
+      ></div>
+
+      <!-- Game Over Display -->
+      <div
+        id="game-over"
+        class="game-over"
+        style="font-family: 'Press Start 2P'"
+      >
+        GAME OVER <br />
+        <span id="winner"></span>
+      </div>
+
+      <a-entity draw-line></a-entity>
+    </a-scene>
+  </body>
+</html>

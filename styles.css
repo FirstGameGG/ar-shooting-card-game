@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+* {
+  font-family: "Press Start 2P";
+}
+
+.hp-gui {
+  position: absolute;
+  font-family: "Press Start 2P", Arial, sans-serif;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+.hp-agentA {
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 255, 0.5); /* Blue color */
+  display: none;
+}
+
+.hp-agentB {
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 0, 0, 0.5); /* Red color */
+  display: none;
+}
+
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: Arial, sans-serif;
+  font-size: 2em;
+  color: yellow;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  display: none; /* Hidden by default */
+}
+
+/* Health Bar Styling */
+.health-bar {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 300px;
+  height: 20px;
+  padding: 5px;
+  background: #ddd;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+
+.health-bar .bar {
+  background: #00c04b;
+  width: 100%;
+  height: 10px;
+  position: relative;
+  transition: width 0.5s linear;
+}
+
+.health-bar .hit {
+  background: rgba(255, 255, 255, 0.6);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0px;
+  transition: width 0.5s linear;
+}
+
+#status-display {
+  position: absolute;
+  bottom: 10px;
+  color: white;
+  text-align: center;
+  font-size: 2em;
+  left: 50%;
+  padding: 10px;
+  transform: translate(-50%, -50%);
+}
